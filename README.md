@@ -1,4 +1,4 @@
-[Mod] outgame_intervention [outgame_intervention]
+[Mod] outgame intervention [outgame_intervention]
 
 This mod allows you to let minetest execute a .lua file which you just created.  
 By default it does a file called "tmp.lua" at your worldpath, which you need to create yourself.  
