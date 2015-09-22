@@ -1,5 +1,19 @@
 local load_time_start = os.clock()
 
+-- copied from worldedit/worldedit/code.lua
+--- Executes `code` as a Lua chunk in the global namespace.
+-- @return An error message if the code fails, or nil on success.
+local function run_lua_text(code)
+	local func, err = loadstring(code)
+	if not func then  -- Syntax error
+		return err
+	end
+	local good, err = pcall(func)
+	if not good then  -- Runtime error
+		return err
+	end
+end
+
 -- path of the file
 local path = minetest.get_worldpath().."/tmp.lua"
 
@@ -21,7 +35,16 @@ local function run_stuff()
 	end
 
 -- run it
-	dofile(path)
+	local err = run_lua_text(text)
+	if err then
+		--[[ todo: put an eof to make it not become loaded again
+		file = io.open(path, "w")
+		file:write(""..text)
+		io.close(file)--]]
+
+		minetest.log("action", "[outgame_intervention] error executing file: "..err)
+		return
+	end
 
 -- reset it
 	file = io.open(path, "w")
@@ -29,12 +52,11 @@ local function run_stuff()
 	io.close(file)
 
 -- inform that it worked
-	minetest.log("info", "[outgame_intervention] file executed.")
+	minetest.log("info", "[outgame_intervention] file successfully executed.")
 	return true
 end
 
 local timer = 0
-local step = 1
 minetest.register_globalstep(function(dtime)
 	timer = timer+dtime
 	if timer < step then
