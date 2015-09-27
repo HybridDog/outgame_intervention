@@ -18,7 +18,7 @@ end
 local path = minetest.get_worldpath().."/tmp.lua"
 
 -- the file becomes checked every <step> seconds
-local step = 1
+local step = 4
 
 local function run_stuff()
 -- search file
@@ -34,22 +34,17 @@ local function run_stuff()
 		return
 	end
 
--- run it
-	local err = run_lua_text(text)
-	if err then
-		--[[ todo: put an eof to make it not become loaded again
-		file = io.open(path, "w")
-		file:write(""..text)
-		io.close(file)--]]
-
-		minetest.log("action", "[outgame_intervention] error executing file: "..err)
-		return
-	end
-
 -- reset it
 	file = io.open(path, "w")
 	file:write("")
 	io.close(file)
+
+-- run it
+	local err = run_lua_text(text)
+	if err then
+		minetest.log("action", "[outgame_intervention] error executing file: "..err)
+		return
+	end
 
 -- inform that it worked
 	minetest.log("info", "[outgame_intervention] file successfully executed.")
