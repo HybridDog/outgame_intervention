@@ -12,13 +12,13 @@ local step = 4
 --- Executes `code` as a Lua chunk in the global namespace.
 -- @return An error message if the code fails, or nil on success.
 local function run_lua_text(code)
-	local func, err = loadstring(code)
-	if not func then  -- Syntax error
-		return err
+	local func, syntax_err = loadstring(code)
+	if not func then
+		return syntax_err
 	end
-	local good, err = pcall(func)
-	if not good then  -- Runtime error
-		return err
+	local good, runtime_err = pcall(func)
+	if not good then
+		return runtime_err
 	end
 end
 
